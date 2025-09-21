@@ -12,7 +12,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+prefix = "/api"
 
-@app.get("/hello")
+@app.get(f"{prefix}/hello")
 def read_root():
     return {"message": "Hello from FastAPI!"}

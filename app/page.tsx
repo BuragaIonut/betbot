@@ -7,7 +7,7 @@ export default function Home() {
 
   const checkApi = async () => {
     try {
-      const response = await fetch(`/hello`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hello`);
       const data = await response.json();
       setApiResponse(data.message);
     } catch {
