@@ -4,14 +4,26 @@ import { useState } from "react";
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const checkApi = async () => {
+    setLoading(true);
+    setApiResponse("");
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hello`);
+      const response = await fetch(`/api/hello`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setApiResponse(data.message);
-    } catch {
-      setApiResponse("Error fetching API");
+    } catch (error) {
+      if (error instanceof Error) {
+        setApiResponse(`Error fetching API: ${error.message}`);
+      } else {
+        setApiResponse("An unknown error occurred.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,8 +80,9 @@ export default function Home() {
           <button
             onClick={checkApi}
             className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto"
+            disabled={loading}
           >
-            Check API
+            {loading ? "Loading..." : "Check API"}
           </button>
           {apiResponse && <p>{apiResponse}</p>}
         </div>
